@@ -40,6 +40,25 @@ Cloud::define("sieveOfPrimes", function($params, $user) {
     return $numbers;
 });
 
+Cloud::afterSave("GymComment", function($obj, $user, $meta) {
+    // function can accepts optional 3rd argument $meta, which for example
+    // has "remoteAddress" of client.
+    $gymId = $obj->get('gymId');
+
+    $query = new LeanQuery("GymComment");
+    $query->equalTo('gymId', $gymId);
+    $total = $query->count();
+
+    $objSave = new LeanObject('Gym', $gymId);
+    $objSave->set('comment', array($total));
+    try {
+        $objSave->save();
+    } catch (CloudException $ex) {
+        throw new FunctionError("计算评论数量失败" . $ex->getMessage());
+    }
+    return ;
+});
+
 /*
 
 Cloud::onLogin(function($user) {
