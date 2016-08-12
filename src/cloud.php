@@ -48,15 +48,15 @@ Cloud::afterSave("GymComment", function($obj, $user, $meta) {
     // has "remoteAddress" of client.
     $gymId = $obj->get('gymId');
 
-    $query = new LeanCloud\LeanQuery("GymComment");
+    $query = new LeanQuery("GymComment");
     $query->equalTo('gymId', $gymId);
     $total = $query->count();
 
-    $objSave = new LeanCloud\LeanObject('Gym', $gymId);
+    $objSave = new LeanObject('Gym', $gymId);
     $objSave->set('comment', array($total));
     try {
         $objSave->save();
-    } catch (LeanCloud\CloudException $ex) {
+    } catch (CloudException $ex) {
         throw new FunctionError("计算评论数量失败" . $ex->getMessage());
     }
     return ;
