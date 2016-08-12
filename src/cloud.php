@@ -5,6 +5,27 @@ use \LeanCloud\LeanQuery;
 use \LeanCloud\LeanObject;
 use \LeanCloud\CloudException;
 
+try {
+    $query = new LeanQuery("GymComment");
+} catch (CloudException $ex) {
+    throw new FunctionError('1');
+}
+try {
+    $query = new \LeanQuery("GymComment");
+} catch (CloudException $ex) {
+    throw new FunctionError('2');
+}
+try {
+    $query = new LeanCloud\LeanQuery("GymComment");
+} catch (CloudException $ex) {
+    throw new FunctionError('3');
+}
+try {
+    $query = new \LeanCloud\LeanQuery("GymComment");
+} catch (CloudException $ex) {
+    throw new FunctionError('4');
+}
+
 /*
  * Define cloud functions and hooks on LeanCloud
  */
