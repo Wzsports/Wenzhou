@@ -8,22 +8,22 @@ use \LeanCloud\CloudException;
 try {
     $query = new LeanQuery("GymComment");
 } catch (CloudException $ex) {
-    throw new FunctionError('1');
+    error_log('1');
 }
 try {
     $query = new \LeanQuery("GymComment");
 } catch (CloudException $ex) {
-    throw new FunctionError('2');
+    error_log('2');
 }
 try {
     $query = new LeanCloud\LeanQuery("GymComment");
 } catch (CloudException $ex) {
-    throw new FunctionError('3');
+    error_log('3');
 }
 try {
     $query = new \LeanCloud\LeanQuery("GymComment");
 } catch (CloudException $ex) {
-    throw new FunctionError('4');
+    error_log('4');
 }
 
 /*
