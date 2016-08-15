@@ -1,8 +1,8 @@
 <?php
 
 use \LeanCloud\Engine\Cloud;
-use \LeanCloud\LeanQuery;
-use \LeanCloud\LeanObject;
+use \LeanCloud\Query;
+use \LeanCloud\Object;
 use \LeanCloud\CloudException;
 
 /*
@@ -48,11 +48,11 @@ Cloud::afterSave("GymComment", function($obj, $user, $meta) {
     // has "remoteAddress" of client.
     $gymId = $obj->get('gymId');
 
-    $query = new LeanQuery("GymComment");
+    $query = new Query("GymComment");
     $query->equalTo('gymId', $gymId);
     $total = $query->count();
 
-    $objSave = new LeanObject('Gym', $gymId);
+    $objSave = new Object('Gym', $gymId);
     $objSave->set('comment', array($total));
     try {
         $objSave->save();
