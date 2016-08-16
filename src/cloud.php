@@ -12,15 +12,23 @@ use \LeanCloud\CloudException;
 /**
  * 评论数量自动修改
  */
+function changeComment(){
+
+}
 Cloud::afterSave("GymComment", function($obj, $user, $meta) {
     $gymId = $obj->get('gymId');
 
     $query = new Query("GymComment");
     $query->equalTo('gymId', $gymId);
     $total = $query->count();
-
+    $obj = $query->find();
+    $star = 0;
+    foreach ($obj as $o) {
+        $star += $o->get('star');
+    }
     $objSave = new Object('Gym', $gymId);
-    $objSave->set('comment', array($total));
+    $objSave->set('comment', intval($total));
+    $objSave->set('score', $star/$total);
     try {
         $objSave->save();
     } catch (CloudException $ex) {
@@ -36,9 +44,14 @@ Cloud::afterDelete("GymComment", function($obj, $user, $meta) {
     $query = new Query("GymComment");
     $query->equalTo('gymId', $gymId);
     $total = $query->count();
-
+    $obj = $query->find();
+    $star = 0;
+    foreach ($obj as $o) {
+        $star += $o->get('star');
+    }
     $objSave = new Object('Gym', $gymId);
-    $objSave->set('comment', array($total));
+    $objSave->set('comment', intval($total));
+    $objSave->set('score', $star/$total);
     try {
         $objSave->save();
     } catch (CloudException $ex) {
