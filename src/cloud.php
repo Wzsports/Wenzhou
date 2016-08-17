@@ -58,9 +58,9 @@ function changeSign($obj){
 
     $query2 = new Query('Event');
     $query2->equalTo('objectId', $eventId);
-    $obj = $query2->find();
-    if ($obj[0]) {
-        $maxPeople = $obj[0]->get('maxPeople');
+    $obj2 = $query2->find();
+    if ($obj2[0]) {
+        $maxPeople = $obj2[0]->get('maxPeople');
         $objSave = new Object('Event', $eventId);
         $objSave->set('remainPeople', strval($maxPeople-$total));
         try {
