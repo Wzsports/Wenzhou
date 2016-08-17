@@ -33,7 +33,6 @@ function changeComment($obj){
     }
 }
 
-
 Cloud::afterSave("GymComment", function($obj, $user, $meta) {
     changeComment($obj);
     return ;
@@ -41,6 +40,46 @@ Cloud::afterSave("GymComment", function($obj, $user, $meta) {
 
 Cloud::afterDelete("GymComment", function($obj, $user, $meta) {
     changeComment($obj);
+    return ;
+});
+
+/**
+ * 报名人数自动修改
+ */
+function changeSign($obj){
+    $eventPointer = $obj->get('Event');
+    $eventId = $eventPointer->getObjectId();
+
+    $query = new Query("EventSignUp");
+    $query->equalTo('Event', $eventPointer);
+    $query->equalTo('payStatus', true);
+    $query->notEqualTo('cancelSignStatus', true);
+    $total = $query->count();
+
+    $query2 = new Query('Event');
+    $query2->equalTo('objectId', $eventId);
+    $obj = $query2->find();
+    if ($obj[0]) {
+        $maxPeople = $obj[0]->get('maxPeople');
+        $objSave = new Object('Event', $eventId);
+        $objSave->set('remainPeople', strval($maxPeople-$total));
+        try {
+            $objSave->save();
+        } catch (CloudException $ex) {
+            throw new FunctionError("计算评论数量失败" . $ex->getMessage());
+        }
+    } else {
+        error_log('没有这个赛事');
+    }
+}
+
+Cloud::afterSave("EventSignUp", function($obj, $user, $meta) {
+    changeSign($obj);
+    return ;
+});
+
+Cloud::afterDelete("EventSignUp", function($obj, $user, $meta) {
+    changeSign($obj);
     return ;
 });
 
