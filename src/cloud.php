@@ -49,12 +49,14 @@ Cloud::afterDelete("GymComment", function($obj, $user, $meta) {
 function changeSign($obj){
     $eventPointer = $obj->get('Event');
     $eventId = $eventPointer->getObjectId();
+    error_log($eventId);
 
     $query = new Query("EventSignUp");
     $query->equalTo('Event', $eventPointer);
     $query->equalTo('payStatus', true);
     $query->notEqualTo('cancelSignStatus', true);
     $total = $query->count();
+    error_log($total);
 
     $query2 = new Query('Event');
     $query2->equalTo('objectId', $eventId);
@@ -75,11 +77,13 @@ function changeSign($obj){
 }
 
 Cloud::afterSave("EventSignUp", function($obj, $user, $meta) {
+    error_log('test');
     changeSign($obj);
     return ;
 });
 
 Cloud::afterDelete("EventSignUp", function($obj, $user, $meta) {
+    error_log('test');
     changeSign($obj);
     return ;
 });
