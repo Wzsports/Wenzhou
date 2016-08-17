@@ -66,7 +66,7 @@ function changeSign($obj){
         try {
             $objSave->save();
         } catch (CloudException $ex) {
-            throw new FunctionError("计算评论数量失败" . $ex->getMessage());
+            throw new FunctionError("计算报名人数失败" . $ex->getMessage());
         }
     } else {
         error_log('没有这个赛事');
