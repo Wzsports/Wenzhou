@@ -63,6 +63,7 @@ function changeSign($obj){
         $maxPeople = $obj2[0]->get('maxPeople');
         $objSave = new Object('Event', $eventId);
         $objSave->set('remainPeople', strval($maxPeople-$total));
+        error_log(strval($maxPeople-$total));
         try {
             $objSave->save();
         } catch (CloudException $ex) {
