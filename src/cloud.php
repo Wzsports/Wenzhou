@@ -1,9 +1,11 @@
 <?php
 
 use \LeanCloud\Engine\Cloud;
+use \LeanCloud\Engine\Cloud\FunctionError;
 use \LeanCloud\Query;
 use \LeanCloud\Object;
 use \LeanCloud\CloudException;
+
 
 /*
  * Define cloud functions and hooks on LeanCloud
