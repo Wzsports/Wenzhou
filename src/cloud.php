@@ -44,6 +44,25 @@ Cloud::afterDelete("GymComment", function($obj, $user, $meta) {
 });
 
 /**
+ * 提取取票密码
+ */
+function ticketPass($obj){
+    $query = new Query("Booking");
+    $query->equalTo('ticketPass', '');
+    $objs = $query->find();
+    foreach ($objs as $key => $value) {
+        $objSave = new Object('Booking', $value->getObjectId());
+        $objSave->set('ticketPass', substr($value->getObjectId(), -10));
+        $objSave->save();
+    }
+}
+Cloud::afterSave("Booking", function($obj, $user, $meta) {
+    error_log('test');
+    ticketPass($obj);
+    return ;
+});
+
+/**
  * 报名人数自动修改
  */
 function changeSign($obj){
