@@ -59,6 +59,7 @@ function ticketPass($obj){
             $objSave->save();
             error_log('取票密码update成功');
         } catch (CloudException $ex) {
+            error_log('取票密码update失败'.$ex->getMessage());
             throw new FunctionError("取票密码update失败" . $ex->getMessage());
         }
     }
