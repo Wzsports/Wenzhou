@@ -53,7 +53,12 @@ function ticketPass($obj){
     foreach ($objs as $key => $value) {
         $objSave = new Object('Booking', $value->getObjectId());
         $objSave->set('ticketPass', substr($value->getObjectId(), -10));
-        $objSave->save();
+        try {
+            $objSave->save();
+            error_log('取票密码update成功');
+        } catch (CloudException $ex) {
+            throw new FunctionError("取票密码update失败" . $ex->getMessage());
+        }
     }
 }
 Cloud::afterSave("Booking", function($obj, $user, $meta) {
