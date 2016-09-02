@@ -5,6 +5,10 @@ use \LeanCloud\Engine\FunctionError;
 use \LeanCloud\Query;
 use \LeanCloud\Object;
 use \LeanCloud\CloudException;
+use \LeanCloud\Client;
+
+
+Client::useMasterKey(true);
 
 
 /*
