@@ -48,7 +48,7 @@ Cloud::afterDelete("GymComment", function($obj, $user, $meta) {
  */
 function ticketPass($obj){
     $query = new Query("Booking");
-    $query->equalTo('ticketPass', '');
+    $query->equalTo('ticketPass', null);
     $objs = $query->find();
     foreach ($objs as $key => $value) {
         $objSave = new Object('Booking', $value->getObjectId());
