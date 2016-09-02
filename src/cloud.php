@@ -1,7 +1,7 @@
 <?php
 
 use \LeanCloud\Engine\Cloud;
-use \LeanCloud\Engine\Cloud\FunctionError;
+use \LeanCloud\Engine\FunctionError;
 use \LeanCloud\Query;
 use \LeanCloud\Object;
 use \LeanCloud\CloudException;
