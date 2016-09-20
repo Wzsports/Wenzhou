@@ -52,7 +52,7 @@ Cloud::afterDelete("GymComment", function($obj, $user, $meta) {
 /**
  * 提取取票密码
  */
-function ticketPass($obj){
+function ticketPass(){
     $query = new Query("Booking");
     $query->equalTo('ticketPass', null);
     $objs = $query->find();
@@ -71,13 +71,13 @@ function ticketPass($obj){
 }
 Cloud::afterSave("Booking", function($obj, $user, $meta) {
     error_log('testBookingafterSave');
-    ticketPass($obj);
+    ticketPass();
     $obj->disableAfterHook();
     return ;
 });
 Cloud::afterDelete("Booking", function($obj, $user, $meta) {
     error_log('testBookingafterDelete');
-    ticketPass($obj);
+    ticketPass();
     $obj->disableAfterHook();
     return ;
 });
@@ -127,11 +127,16 @@ Cloud::afterDelete("EventSignUp", function($obj, $user, $meta) {
     return ;
 });
 
+
 /**
  * 测试云函数
  */
 Cloud::define("test", function($params, $user) {
     error_log('添加测试日志');
+});
+Cloud::define("ticketPass", function($params, $user) {
+    ticketPass();
+    error_log('云函数修改ticketpass');
 });
 
 /**
