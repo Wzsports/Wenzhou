@@ -72,6 +72,7 @@ function ticketPass($obj){
 Cloud::afterSave("Booking", function($obj, $user, $meta) {
     error_log('test');
     ticketPass($obj);
+    $obj->disableAfterHook();
     return ;
 });
 
