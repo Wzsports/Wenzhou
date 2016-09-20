@@ -56,6 +56,7 @@ function ticketPass($obj){
     $query = new Query("Booking");
     $query->equalTo('ticketPass', null);
     $objs = $query->find();
+    error_log('共有'.strval(count($objs)).'个需要修改');
     foreach ($objs as $key => $value) {
         $objSave = new Object('Booking', $value->getObjectId());
         $objSave->set('ticketPass', substr($value->getObjectId(), -10));
