@@ -56,21 +56,21 @@ Cloud::afterDelete("GymComment", function($obj, $user, $meta) {
 Cloud::afterSave("Booking", function($obj, $user, $meta) {
     error_log('testBookingafterSave');
     // ticketPass
-    $query = new Query("Booking");
-    $query->equalTo('ticketPass', null);
-    $objs = $query->find();
-    error_log('共有'.strval(count($objs)).'个需要修改');
-    foreach ($objs as $key => $value) {
-        $objSave = new Object('Booking', $value->getObjectId());
-        $objSave->set('ticketPass', substr($value->getObjectId(), -10));
-        try {
-            $objSave->save();
-            error_log('取票密码update成功');
-        } catch (CloudException $ex) {
-            error_log('取票密码update失败'.$ex->getMessage());
-            throw new FunctionError("取票密码update失败" . $ex->getMessage());
-        }
-    }
+    // $query = new Query("Booking");
+    // $query->equalTo('ticketPass', null);
+    // $objs = $query->find();
+    // error_log('共有'.strval(count($objs)).'个需要修改');
+    // foreach ($objs as $key => $value) {
+    //     $objSave = new Object('Booking', $value->getObjectId());
+    //     $objSave->set('ticketPass', substr($value->getObjectId(), -10));
+    //     try {
+    //         $objSave->save();
+    //         error_log('取票密码update成功');
+    //     } catch (CloudException $ex) {
+    //         error_log('取票密码update失败'.$ex->getMessage());
+    //         throw new FunctionError("取票密码update失败" . $ex->getMessage());
+    //     }
+    // }
     // ticketPass 
     $obj->disableAfterHook();
     return ;
