@@ -158,6 +158,12 @@ Cloud::afterDelete("EventSignUp", function($obj, $user, $meta) {
     return ;
 });
 
+// 测试aftersave
+Cloud::afterSave("De", function($obj, $user, $meta) {
+    error_log('dedede');
+    return ;
+});
+
 
 /**
  * 测试云函数
