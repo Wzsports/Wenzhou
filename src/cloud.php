@@ -170,9 +170,20 @@ function changeComment($obj){
     foreach ($obj as $o) {
         $star += $o->get('star');
     }
+    // 查询星级
+    $query = new Query("Gym");
+    $query->equalTo('objectId', $gymId);
+    $obj_gym = $query->find();
+    if (isset($obj_gym[0])) {
+        $scoreSet = intval($obj_gym[0]->get('scoreSet'));
+    } else {
+        $scoreSet = 0;
+    }
+    $score = $star/$total > $scoreSet ? $star/$total : $scoreSet;
+    // 修改
     $objSave = new Object('Gym', $gymId);
     $objSave->set('comment', intval($total));
-    $objSave->set('score', $star/$total);
+    $objSave->set('score', $score);
     try {
         $objSave->save();
     } catch (CloudException $ex) {
