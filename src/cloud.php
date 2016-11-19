@@ -15,29 +15,7 @@ Client::useMasterKey(true);
  * Define cloud functions and hooks on LeanCloud
  */
 
-/**
- * 评论数量自动修改
- */
-function changeComment($obj){
-    $gymId = $obj->get('gymId');
 
-    $query = new Query("GymComment");
-    $query->equalTo('gymId', $gymId);
-    $total = $query->count();
-    $obj = $query->find();
-    $star = 0;
-    foreach ($obj as $o) {
-        $star += $o->get('star');
-    }
-    $objSave = new Object('Gym', $gymId);
-    $objSave->set('comment', intval($total));
-    $objSave->set('score', $star/$total);
-    try {
-        $objSave->save();
-    } catch (CloudException $ex) {
-        throw new FunctionError("计算评论数量失败" . $ex->getMessage());
-    }
-}
 
 Cloud::afterSave("GymComment", function($obj, $user, $meta) {
     changeComment($obj);
@@ -51,6 +29,7 @@ Cloud::afterDelete("GymComment", function($obj, $user, $meta) {
 
 /**
  * 提取取票密码
+ * 人气自动更新
  */
 
 Cloud::afterSave("Booking", function($obj, $user, $meta) {
@@ -71,7 +50,70 @@ Cloud::afterSave("Booking", function($obj, $user, $meta) {
             throw new FunctionError("取票密码update失败" . $ex->getMessage());
         }
     }
-    // ticketPass 
+    // 人气自动更新
+    // 查询之前的人气值
+    $gym = $obj->get('gym');
+    $query = new Query("Gym");
+    $query->equalTo('objectId', $gym->getObjectId());
+    $obj_gym = $query->find();
+    if (isset($obj_gym[0])) {
+        $popularity_set = $obj_gym[0]->get('popularitySet');
+        $popularity_old = $obj_gym[0]->get('popularity');
+        $popularity_set = $popularity_set ? $popularity_set : 0;
+        $popularity_old = $popularity_old ? $popularity_old : 0;
+        $popularity = $popularity_set > $popularity_old ? $popularity_set : $popularity_old;
+
+        $ticketArray = $obj->get('ticketArray');
+        $popularity_plus = 0;
+        foreach ($ticketArray as $key => $value) {
+            // 小时数
+            if (isset($value['startTime']) && isset($value['endTime'])) {
+                $start_time = $value['startTime'];
+                $end_time = $value['endTime'];
+                $start_time = intval(str_replace(':', '', $start_time));
+                $end_time = intval(str_replace(':', '', $end_time));
+                $hour_diff = round(($end_time-$start_time)/100);
+            } else {
+                $hour_diff = 1;
+            }
+            // 票数
+            if (isset($value['count'])) {
+                $count = $value['count'] ? $value['count'] : 1;
+            } else {
+                $count = 1;
+            }
+            
+            // 场地类
+            if (isset($value['orderStatusId'])) {
+                if (isset($value['startDate']) && isset($value['endDate'])) {
+                    $start_date = $value['startDate'];
+                    $end_date = $value['endDate'];
+                    $start_date = str_replace('年', '-', $start_date);
+                    $start_date = str_replace('月', '-', $start_date);
+                    $start_date = str_replace('日', '', $start_date);
+                    $end_date = str_replace('年', '-', $end_date);
+                    $end_date = str_replace('月', '-', $end_date);
+                    $end_date = str_replace('日', '', $end_date);
+                    $day_time_diff = intval(strtotime($end_date)) - intval(strtotime($start_date));
+                    $day_diff = ceil($day_time_diff/7/86400);
+                } else {
+                    $day_diff = 1;
+                }
+
+                $popularity_plus += $hour_diff*$day_diff*$count;
+            } else {
+                // 门票类
+                $popularity_plus += $hour_diff*$count;
+            }
+        }
+        $obj_gym[0]->set('popularity', $popularity+$popularity_plus);
+        $obj_gym[0]->save();
+        error_log('人气自动更新成功');
+    } else {
+        error_log('人气自动更新失败，未查询到场馆');
+    }
+    
+    
     $obj->disableAfterHook();
     return ;
 });
@@ -97,6 +139,46 @@ Cloud::afterDelete("Booking", function($obj, $user, $meta) {
     $obj->disableAfterHook();
     return ;
 });
+
+/**
+ * 修改报名
+ */
+Cloud::afterSave("EventSignUp", function($obj, $user, $meta) {
+    error_log('test');
+    changeSign($obj);
+    return ;
+});
+
+Cloud::afterDelete("EventSignUp", function($obj, $user, $meta) {
+    error_log('test');
+    changeSign($obj);
+    return ;
+});
+
+
+/**
+ * 评论数量自动修改
+ */
+function changeComment($obj){
+    $gymId = $obj->get('gymId');
+
+    $query = new Query("GymComment");
+    $query->equalTo('gymId', $gymId);
+    $total = $query->count();
+    $obj = $query->find();
+    $star = 0;
+    foreach ($obj as $o) {
+        $star += $o->get('star');
+    }
+    $objSave = new Object('Gym', $gymId);
+    $objSave->set('comment', intval($total));
+    $objSave->set('score', $star/$total);
+    try {
+        $objSave->save();
+    } catch (CloudException $ex) {
+        throw new FunctionError("计算评论数量失败" . $ex->getMessage());
+    }
+}
 
 /**
  * 报名人数自动修改
@@ -146,25 +228,9 @@ function changeSign($obj){
     }
 }
 
-Cloud::afterSave("EventSignUp", function($obj, $user, $meta) {
-    error_log('test');
-    changeSign($obj);
-    return ;
-});
-
-Cloud::afterDelete("EventSignUp", function($obj, $user, $meta) {
-    error_log('test');
-    changeSign($obj);
-    return ;
-});
-
-// 测试aftersave
-Cloud::afterSave("De", function($obj, $user, $meta) {
-    error_log('dedede');
-    return ;
-});
-
-
+/**
+ * 云函数
+ */
 /**
  * 测试云函数
  */
