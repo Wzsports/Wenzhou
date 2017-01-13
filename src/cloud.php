@@ -41,7 +41,7 @@ Cloud::afterSave("Booking", function($obj, $user, $meta) {
     error_log('共有'.strval(count($objs)).'个需要修改');
     foreach ($objs as $key => $value) {
         $objSave = new Object('Booking', $value->getObjectId());
-        $objSave->set('ticketPass', substr($value->getObjectId(), -10));
+        $objSave->set('ticketPass', hexdec(substr($value->getObjectId(), -10)));
         try {
             $objSave->save();
             error_log('取票密码update成功');
