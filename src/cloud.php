@@ -206,9 +206,9 @@ function changeSign($obj){
     $query->equalTo('payStatus', 1);
     $query->notEqualTo('cancelSignStatus', 1);
     $total = 0;
-    // if ($obj->get('payStatus') == 1 && $obj->get('cancelSignStatus') != 1) {
-    //     $total += count($current_users);
-    // }
+    if ($obj->get('payStatus') == 1 && $obj->get('cancelSignStatus') != 1) {
+        $total += count($current_users);
+    }
     
     $obj_signup = $query->find();
     foreach ($obj_signup as $value) {
