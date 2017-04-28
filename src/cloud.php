@@ -149,7 +149,11 @@ Cloud::afterSave("EventSignUp", function($obj, $user, $meta) {
     changeSign($obj);
     return ;
 });
-
+Cloud::afterUpdate("EventSignUp", function($obj, $user, $meta) {
+    error_log('test');
+    changeSign($obj);
+    return ;
+});
 Cloud::afterDelete("EventSignUp", function($obj, $user, $meta) {
     error_log('test');
     changeSign($obj);
