@@ -209,6 +209,17 @@ function changeSign($obj){
     if ($obj->get('payStatus') == 1 && $obj->get('cancelSignStatus') != 1) {
         $total += count($current_users);
     }
+    // 打印log
+    if ($obj->get('payStatus') == 1) {
+        error_log('payStatus=1');
+    } else {
+        error_log('payStatus!=1');
+    }
+    if ($obj->get('cancelSignStatus') != 1) {
+        error_log('cancelSignStatus=1');
+    } else {
+        error_log('cancelSignStatus!=1');
+    }
     
     $obj_signup = $query->find();
     foreach ($obj_signup as $value) {
@@ -216,9 +227,12 @@ function changeSign($obj){
         // 有领队
         if (isset($leader[0])) {
             $total += 1;
+            error_log('有领队');
         }
         $user_contact = $value->get('userContacts');
         $total += count($user_contact);
+        // 打印
+        error_log('加'.strval($user_contact));
     }
     error_log($total);
 
