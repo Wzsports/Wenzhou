@@ -210,25 +210,25 @@ function changeSign($obj){
     $query->equalTo('payStatus', 1);
     $query->notEqualTo('cancelSignStatus', 1);
     $total = 0;
-    if ($obj->get('cancelSignStatus') != 1) {
-        $total += count($current_users);
-    }
-    $current_leader = $obj->get('eventLeaderArray');
-    if (isset($current_leader[0])) {
-        $total += 1;
-        error_log('有领队');
-    }
-    // 打印log
-    if ($obj->get('payStatus') == 1) {
-        error_log('payStatus=1');
-    } else {
-        error_log('payStatus!=1');
-    }
-    if ($obj->get('cancelSignStatus') != 1) {
-        error_log('cancelSignStatus!=1');
-    } else {
-        error_log('cancelSignStatus=1');
-    }
+    // if ($obj->get('cancelSignStatus') != 1) {
+    //     $total += count($current_users);
+    //     $current_leader = $obj->get('eventLeaderArray');
+    //     if (isset($current_leader[0])) {
+    //         $total += 1;
+    //         error_log('有领队');
+    //     }
+    // }
+    // // 打印log
+    // if ($obj->get('payStatus') == 1) {
+    //     error_log('payStatus=1');
+    // } else {
+    //     error_log('payStatus!=1');
+    // }
+    // if ($obj->get('cancelSignStatus') != 1) {
+    //     error_log('cancelSignStatus!=1');
+    // } else {
+    //     error_log('cancelSignStatus=1');
+    // }
     
     $obj_signup = $query->find();
     foreach ($obj_signup as $value) {
