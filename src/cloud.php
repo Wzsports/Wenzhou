@@ -206,7 +206,7 @@ function changeSign($obj){
     $query->equalTo('payStatus', 1);
     $query->notEqualTo('cancelSignStatus', 1);
     $total = 0;
-    if ($obj->get('payStatus') == 1 && $obj->get('cancelSignStatus') != 1) {
+    if ($obj->get('cancelSignStatus') != 1) {
         $total += count($current_users);
     }
     // 打印log
@@ -232,7 +232,7 @@ function changeSign($obj){
         $user_contact = $value->get('userContacts');
         $total += count($user_contact);
         // 打印
-        error_log('加'.strval($user_contact));
+        error_log('加'.strval(count($user_contact)));
     }
     error_log($total);
 
